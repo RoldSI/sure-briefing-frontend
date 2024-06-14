@@ -43,9 +43,11 @@ const userSlice = createSlice({
         builder
           .addCase(signUpWithEmail.pending, (state) => {
             state.status = 'loading';
+            state.error = null;
           })
           .addCase(signUpWithEmail.fulfilled, (state, action) => {
             state.status = 'succeeded';
+            state.error = null;
             state.user = action.payload;
           })
           .addCase(signUpWithEmail.rejected, (state, action) => {
@@ -54,9 +56,11 @@ const userSlice = createSlice({
           })
           .addCase(signInWithEmail.pending, (state) => {
             state.status = 'loading';
+            state.error = null;
           })
           .addCase(signInWithEmail.fulfilled, (state, action) => {
             state.status = 'succeeded';
+            state.error = null;
             state.user = action.payload;
           })
           .addCase(signInWithEmail.rejected, (state, action) => {

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 function AccountSite() {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
@@ -14,22 +15,24 @@ function AccountSite() {
     e.preventDefault();
     if (user) {
       const token = await user.getIdToken();
-      fetch("https://sure-briefing-frontend-rv4heagjaa-ew.a.run.app/user/delivery", {
+      fetch("https://api.sure-briefing.com/user/delivery", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ 'email': email }),
+        body: JSON.stringify({ email }),
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Email submitted successfully", data);
+          setMessage("Email submitted successfully.");
         })
         .catch((error) => {
+          setMessage("Error submitting email.");
           console.error("Error submitting email", error);
         });
     } else {
+      setMessage("User not authenticated.");
       console.error("User not authenticated");
     }
   };
@@ -37,7 +40,7 @@ function AccountSite() {
   const handleSubscribe = async () => {
     if (user) {
       const token = await user.getIdToken();
-      fetch("https://sure-briefing-frontend-rv4heagjaa-ew.a.run.app/user/subscribe", {
+      fetch("https://api.sure-briefing.com/user/subscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,12 +49,14 @@ function AccountSite() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Subscribed successfully", data);
+          setMessage("Subscribed successfully.");
         })
         .catch((error) => {
+          setMessage("Error subscribing.");
           console.error("Error subscribing", error);
         });
     } else {
+      setMessage("User not authenticated.");
       console.error("User not authenticated");
     }
   };
@@ -59,7 +64,7 @@ function AccountSite() {
   const handleUnsubscribe = async () => {
     if (user) {
       const token = await user.getIdToken();
-      fetch("https://sure-briefing-frontend-rv4heagjaa-ew.a.run.app/user/unsubscribe", {
+      fetch("https://api.sure-briefing.com/user/unsubscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,24 +73,34 @@ function AccountSite() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Unsubscribed successfully", data);
+          setMessage("Unsubscribed successfully.");
         })
         .catch((error) => {
+          setMessage("Error unsubscribing.");
           console.error("Error unsubscribing", error);
         });
     } else {
+      setMessage("User not authenticated.");
       console.error("User not authenticated");
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md">
-        <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 py-8 px-4">
+      <div className="bg-white shadow-md rounded-lg w-full max-w-3xl p-8">
+        {message && (
+          <div className="mb-4 p-4 border rounded text-center" role="alert">
+            {message}
+          </div>
+        )}
+        <form onSubmit={handleFormSubmit} className="mb-6">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
+              Delivery E-Mail
             </label>
+            <p className="text-gray-600 text-sm mb-2">
+              This address will be used to deliver your daily briefing. By adding it, you agree that it will be associated with your account.
+            </p>
             <input
               type="email"
               id="email"
@@ -95,16 +110,20 @@ function AccountSite() {
               required
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex justify-end">
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Submit Email
+              Set Delivery E-Mail
             </button>
           </div>
         </form>
-        <div className="flex items-center justify-between">
+        <p className="text-gray-600 text-sm mb-6">
+          After creating your account and setting the delivery email, you are automatically subscribed to the daily briefing. 
+          You can use the buttons below to stop receiving the daily briefing or reactivate it.
+        </p>
+        <div className="flex justify-between">
           <button
             onClick={handleSubscribe}
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

@@ -6,9 +6,10 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { setUser } from './store/user';
 import LandingSite from "./pages/landing";
 import Menubar from "./components/menubar";
-import SignIn from "./components/signin";
-import SignUp from "./components/signup";
+import SignInSite from "./pages/signin";
+import SignUpSite from "./pages/signup";
 import AccountSite from './pages/account';
+import AuthenticatedRoute from './components/authenticated_route';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,9 +33,9 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<LandingSite />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/account" element={<AccountSite />} />
+            <Route path="/signin" element={<SignInSite />} />
+            <Route path="/signup" element={<SignUpSite />} />
+            <Route path="/account" element={<AuthenticatedRoute><AccountSite/></AuthenticatedRoute>} />
           </Routes>
         </main>
       </div>
